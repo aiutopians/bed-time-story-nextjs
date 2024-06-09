@@ -36,7 +36,7 @@ export async function GET(request: Request) {
   const user_id = searchParams.get('user_id')
   const res = await fetch(`https://tgik6hea9d.execute-api.ap-south-1.amazonaws.com/prod/list_chat?user_id=${user_id}`)
   const data = await res.json()
-  console.log('data', data)
+  console.log('dummy data', data)
  
   return Response.json(data)
 }

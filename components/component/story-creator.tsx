@@ -15,6 +15,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 //import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogBody, AlertDialogFooter } from "@/components/ui/alert"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
 import { v4 as uuidv4 } from "uuid"
+import Loader from "./loader"
+import Para from "./paragraph"
 
 
 export default function StoryCreator() {
@@ -37,12 +39,14 @@ export default function StoryCreator() {
   const [language, setLanguage] = useState('English')
   const [audience, setAudience] = useState('Children')
   const [adventure, setAdventure] = useState('')
-  const [chatList, setChatList] = useState([])
+  const [chatList, setChatList] = useState([]);
+  const [chatId, setChatId] = useState(null);
 
   const resetData =() => {
     setStories([])
     setAudience('Children')
     setLanguage('English')
+    setChatId(null)
   }
   const addCharacter = () => {
     if (newCharacter.name || newCharacter.description) {
@@ -51,9 +55,11 @@ export default function StoryCreator() {
     }
   }
   const getStory = () => {
+    let newChatId = uuidv4();
+    !chatId && setChatId(newChatId)
     let reqBodyData = {
       "user_id": "23456780",
-      "chat_id": uuidv4(),
+      "chat_id": chatId,
       "no_of_words": noOfWords,
       "language": language,
       "target_audience": audience,
@@ -66,21 +72,12 @@ export default function StoryCreator() {
   }
 
   const getStoryBasedonId = (chatId) => {
-    let filterData = chatList.filter(data => data.chat_id = chatId)
+    let filterData = chatList.filter(data => data.chat_id == chatId)
     
     let story = filterData[0].stories.map(data => data.story)
     console.log('filter data', filterData)
+    setChatId(chatId)
     setStories(story)
-    // return fetch(`/story?chat_id=${chatId}&story_id=${storyId}`)
-    // .then(response => response.json())
-    // .then(data => {
-    //   console.log('sinlg story data', data)
-    //   setStories([data?.chats?.story])
-    //   console.log(data?.chats?.adventure)
-    //   setAdventure(data?.chats?.adventure)
-    //   //setChatList(data?.chats)
-    // })
-    // .catch(error => console.log('error', error))
   }
 
   const getChatList = () => {
@@ -163,7 +160,7 @@ export default function StoryCreator() {
               {chatList.map((chatData, index) => {
                  return (
                   <Button variant="ghost" className="flex items-center justify-between" onClick={()=>getStoryBasedonId(chatData.chat_id)} key={index}>
-                    <span className="w-10/12 truncate">{chatData?.chat_id}</span>
+                    <span className="w-10/12 truncate">{chatData?.stories[0].title}</span>
                     <MessageCircleIcon className="h-4 w-4" />
                     <XIcon className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`} onClick={() => deleteStory(chatData.chat_id)} />
                   </Button>
@@ -300,6 +297,7 @@ export default function StoryCreator() {
                 <Button variant="secondary" onClick={handleGenerateStory}>
                   <ArrowRightIcon className={`h-6 w-6 ${isDarkMode ? "text-white" : ""}`} />
                   <span className="ml-2">Generate Story</span>
+                  {/* <Loader /> */}
                 </Button>
               </div>
             </div>
@@ -320,7 +318,7 @@ export default function StoryCreator() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <p className={isDarkMode ? "text-white" : ""}>{story}</p>
+                      <Para text={story} />
                     </AccordionContent>
                   </AccordionItem>
                 ))}
