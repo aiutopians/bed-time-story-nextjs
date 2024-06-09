@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 //import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogBody, AlertDialogFooter } from "@/components/ui/alert"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid"
 
 
 export default function StoryCreator() {
@@ -66,9 +66,11 @@ export default function StoryCreator() {
   }
 
   const getStoryBasedonId = (chatId) => {
-    let filterData = chatList.filter(data => data.chat_id = chatId)[0].stories.map(data => data.story)
+    let filterData = chatList.filter(data => data.chat_id = chatId)
+    
+    let story = filterData[0].stories.map(data => data.story)
     console.log('filter data', filterData)
-    setStories(filterData)
+    setStories(story)
     // return fetch(`/story?chat_id=${chatId}&story_id=${storyId}`)
     // .then(response => response.json())
     // .then(data => {
@@ -83,20 +85,11 @@ export default function StoryCreator() {
 
   const getChatList = () => {
     let user_id = 23456780
-    let reqBodyData = {
-      "user_id": "23456780",
-      "chat_id": "dd16f615-7a21-4f47-809f-87188c38b1d1",
-      "no_of_words": noOfWords,
-      "language": language,
-      "target_audience": audience,
-      "character": characters,
-      "adventure": adventure
-  }
     return fetch(`/api?user_id=${user_id}`)
     .then(response => response.json())
     .then(data => {
-      console.log('data', data.chats)
-      setChatList(data?.chats)
+      console.log('chat list data', data.chats)
+      setChatList([...data?.chats])
       //setStories(data?.chats?.stories.map(data => data?.story))
     })
     .catch(error => console.log('error', error))
@@ -130,7 +123,7 @@ export default function StoryCreator() {
     setNewCharacter({ ...newCharacter, [field]: value })
   }
   const handleGenerateStory = async () => {
-    const adventure = document.getElementById("adventure").value;
+    //const adventure = document.getElementById("adventure")?.value;
     let data = await getStory()
     console.log(' story data', data)
     const mockStory = data?.story
@@ -148,6 +141,7 @@ export default function StoryCreator() {
   const deleteStory = async(chat_id) => {
     await deleteChat(chat_id)
     getChatList();
+    setStories([])
   }
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
@@ -166,9 +160,9 @@ export default function StoryCreator() {
                 <span>New Story ✨</span>
                 <ChevronRightIcon className="h-4 w-4" />
               </Button>
-              {chatList.map(chatData => {
+              {chatList.map((chatData, index) => {
                  return (
-                  <Button variant="ghost" className="flex items-center justify-between" onClick={()=>getStoryBasedonId(chatData.chat_id)}>
+                  <Button variant="ghost" className="flex items-center justify-between" onClick={()=>getStoryBasedonId(chatData.chat_id)} key={index}>
                     <span className="w-10/12 truncate">{chatData?.chat_id}</span>
                     <MessageCircleIcon className="h-4 w-4" />
                     <XIcon className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`} onClick={() => deleteStory(chatData.chat_id)} />
@@ -219,7 +213,7 @@ export default function StoryCreator() {
             </Button>
           </div>
           <div className="flex items-center space-x-4">
-            <Select onValueChange={(e)=> setNoOfWords(e)}>
+            <Select onValueChange={(e)=> setNoOfWords(parseInt(e))}>
               <SelectTrigger id="story-length" aria-label="Story length">
                 <SelectValue placeholder="Short (500 words)" />
               </SelectTrigger>
