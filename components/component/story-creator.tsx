@@ -159,7 +159,7 @@ export default function StoryCreator() {
               </Button>
               {chatList.map((chatData, index) => {
                  return (
-                  <Button variant="ghost" className="flex items-center justify-between" onClick={()=>getStoryBasedonId(chatData.chat_id)} key={index}>
+                  <Button variant="ghost" className="flex items-center justify-between text-black" onClick={()=>getStoryBasedonId(chatData.chat_id)} key={index}>
                     <span className="w-10/12 truncate">{chatData?.stories[0].title}</span>
                     <MessageCircleIcon className="h-4 w-4" />
                     <XIcon className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`} onClick={() => deleteStory(chatData.chat_id)} />
