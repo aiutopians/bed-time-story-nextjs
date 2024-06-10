@@ -59,7 +59,7 @@ export default function StoryCreator() {
     !chatId && setChatId(newChatId)
     let reqBodyData = {
       "user_id": "23456780",
-      "chat_id": chatId,
+      "chat_id": chatId ? chatId : newChatId,
       "no_of_words": noOfWords,
       "language": language,
       "target_audience": audience,
