@@ -131,7 +131,7 @@ export default function StoryCreator() {
     //   .join(
     //     "and",
     //   )}, who embarked on an adventure ${adventure}. After many exciting twists and turns, they learned valuable lessons and lived happily ever after.`
-    setStories([...stories, mockStory])
+    setStories([mockStory, ...stories])
     getChatList()
   }
   const toggleDarkMode = () => {
