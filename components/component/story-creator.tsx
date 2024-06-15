@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid"
 import Loader from "./loader"
 import Para from "./paragraph"
 import Link from "next/link"
+import { LanguageEnum, NoOfWords, TargetAudienceEnum, targetAudience, language as languageConst} from "../../app/const"
 
 
 export default function StoryCreator() {
@@ -193,7 +194,7 @@ export default function StoryCreator() {
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="/feature">
             Features
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="/pricing">
             Pricing
           </Link>
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
@@ -225,8 +226,8 @@ export default function StoryCreator() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="500">Short (500 words) 📗</SelectItem>
-                <SelectItem value="1000">Medium (1000 words) 📕</SelectItem>
-                <SelectItem value="1500">Long (1500 words) 📘</SelectItem>
+                <SelectItem value="750">Medium (750 words) 📕</SelectItem>
+                <SelectItem value="1000">Long (1000 words) 📘</SelectItem>
               </SelectContent>
             </Select>
             <Select onValueChange={(e)=> setLanguage(e)}>
@@ -234,9 +235,12 @@ export default function StoryCreator() {
                 <SelectValue placeholder="English" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="English">English 🇺🇸</SelectItem>
+                {languageConst.map((data, index) => (
+                  <SelectItem key={index} value={data?.value}>{`${data?.name}`}</SelectItem>
+                ))}
+                {/* <SelectItem value="English">English 🇺🇸</SelectItem>
                 <SelectItem value="Spanish">Spanish 🇪🇸</SelectItem>
-                <SelectItem value="French">French 🇫🇷</SelectItem>
+                <SelectItem value="French">French 🇫🇷</SelectItem> */}
               </SelectContent>
             </Select>
             <Select onValueChange={(e)=> setAudience(e)}>
@@ -244,9 +248,12 @@ export default function StoryCreator() {
                 <SelectValue placeholder="Children" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Children">Children 👶</SelectItem>
-                <SelectItem value="Teens">Teens 👦</SelectItem>
-                <SelectItem value="Adults">Adults 👩</SelectItem>
+                {targetAudience.map((data, index) => (
+                  <SelectItem key={index} value={data?.value}>{`${data?.name} ${data?.logo}`}</SelectItem>
+                ))}
+                
+                {/* <SelectItem value="Teens">Teens 👦</SelectItem>
+                <SelectItem value="Adults">Adults 👩</SelectItem> */}
               </SelectContent>
             </Select>
           </div>
@@ -299,7 +306,7 @@ export default function StoryCreator() {
                 <Input
                   id="adventure"
                   placeholder="eating lots of yummy food"
-                  className={isDarkMode ? "text-white" : ""}
+                  className={isDarkMode ? "text-white" : "text-white"}
                   onChange={e => setAdventure(e.target.value)}
                   value={adventure}
                 />
