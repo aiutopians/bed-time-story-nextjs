@@ -4,6 +4,7 @@ import HomePage from '@/components/home'
 import Link from "next/link"
 import Header from "@/components/component/header"
 import Footer from '@/components/component/footer'
+import Component from '@/components/component'
 
 // export default function Home() {
 //   return (
@@ -86,14 +87,15 @@ import Head from 'next/head';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="bg-white text-black">
       <Head>
         <title>Personalized Bedtime Stories</title>
         <meta name="description" content="Create an enchanting bedtime story in seconds, tailored to include your child's name, favorite characters, and beloved themes, and have it read aloud." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex flex-1 flex-col items-center justify-center w-full px-20 text-center">
+      <Component />
+      {/* <main className="flex flex-1 flex-col items-center justify-center w-full px-20 text-center">
         <h1 className="text-4xl font-bold">
           Have AI read and write <br /> Personalized Bedtime Stories
         </h1>
@@ -110,7 +112,7 @@ export default function Home() {
         <div className="mt-8">
           <Image src="/home.png" alt="Storyteller" width={500} height={500} />
         </div>
-      </main>
+      </main> */}
       <Footer />
       {/* <footer className="w-full py-8 border-t border-gray-200 flex justify-around">
         <div className="flex flex-col text-left">

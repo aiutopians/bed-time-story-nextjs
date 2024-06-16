@@ -35,6 +35,7 @@ export default function StoryCreator() {
   const [characters, setCharacters] = useState(characterInitialState)
   const [newCharacter, setNewCharacter] = useState({ name: "", description: "" })
   const [stories, setStories] = useState([])
+  const [title, setTitle] = useState([])
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [noOfWords, setNoOfWords] = useState(500)
@@ -43,9 +44,11 @@ export default function StoryCreator() {
   const [adventure, setAdventure] = useState('')
   const [chatList, setChatList] = useState([]);
   const [chatId, setChatId] = useState(null);
+  const [loader , setLoader] = useState(false)
 
   const resetData =() => {
     setStories([])
+    setTitle([])
     setAudience('Children')
     setLanguage('English')
     setChatId(null)
@@ -56,7 +59,7 @@ export default function StoryCreator() {
       setNewCharacter({ name: "", description: "" })
     }
   }
-  const getStory = () => {
+  const getStory = (): any => {
     let newChatId = uuidv4();
     !chatId && setChatId(newChatId)
     let reqBodyData = {
@@ -77,18 +80,22 @@ export default function StoryCreator() {
     let filterData = chatList.filter(data => data.chat_id == chatId)
     
     let story = filterData[0].stories.map(data => data.story)
+    let title = filterData[0].stories.map(data => data.title)
     console.log('filter data', filterData)
     setChatId(chatId)
     setStories(story)
+    setTitle(title);
   }
 
   const getChatList = () => {
+    setLoader(true)
     let user_id = 23456780
     return fetch(`/api?user_id=${user_id}`)
     .then(response => response.json())
     .then(data => {
       console.log('chat list data', data.chats)
       setChatList([...data?.chats])
+      setLoader(false);
       //setStories(data?.chats?.stories.map(data => data?.story))
     })
     .catch(error => console.log('error', error))
@@ -123,30 +130,36 @@ export default function StoryCreator() {
   }
   const handleGenerateStory = async () => {
     //const adventure = document.getElementById("adventure")?.value;
+    setLoader(true)
     let data = await getStory()
-    console.log(' story data', data)
-    const mockStory = data?.story
+    console.log('story', data)
+    const mockStory = data?.story;
+    const mockTitle = data?.title;
     // const mockStory = `Once upon a time, there were ${characters
     //   .map((character) => character.name)
     //   .join(
     //     "and",
     //   )}, who embarked on an adventure ${adventure}. After many exciting twists and turns, they learned valuable lessons and lived happily ever after.`
     setStories([mockStory, ...stories])
+    setTitle([mockTitle, ...title ])
     getChatList()
+    setLoader(false)
   }
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
   }
   const deleteStory = async(chat_id) => {
+    setLoader(true)
     await deleteChat(chat_id)
     getChatList();
-    setStories([])
+    setStories([]);
+    setLoader(false)
   }
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
   return (
-    <div className={`flex h-screen  ${isDarkMode ? "dark" : ""}`}>
+    <div className={`flex h-screen ${isDarkMode ? "dark" : ""}`}>
       {isSidebarOpen && (
         <aside className={`w-64 bg-white border-r ${isDarkMode ? "bg-gray-800 border-gray-700" : ""}`}>
           <div className={`flex flex-col h-full ${isDarkMode ? "border-gray-700 bg-gray-800" : ""}`}>
@@ -158,7 +171,7 @@ export default function StoryCreator() {
               <span className="sr-only">{isSidebarOpen ? "Close" : "Open"} Sidebar</span>
             </Button>
             </div>
-            <div className={`flex flex-col flex-grow p-4 space-y-2 overflow-auto ${isDarkMode ? "text-white" : ""}`}>
+            <div className={`flex flex-col flex-grow p-4 space-y-2 overflow-auto ${isDarkMode ? "" : ""}`}>
               <Button variant="outline" className="flex items-center justify-between" onClick={()=> resetData()}>
                 <span>New Story ✨</span>
                 <ChevronRightIcon className="h-4 w-4" />
@@ -185,164 +198,166 @@ export default function StoryCreator() {
           </div>
         </aside>
       )}
-      <main className={`flex-grow p-8 h-screen overflow-auto ${isDarkMode ? "bg-gray-900" : "bg-white text-black"}`}>
-      <header className="px-4 lg:px-6 h-14 mb-4 flex">
-        <Link className="flex items-center justify-center" href="#">
-          <span className="sr-only">Acme Inc</span>
-        </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="/feature">
-            Features
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="/pricing">
-            Pricing
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            About
-          </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-            Contact
-          </Link>
-        </nav>
-      </header>
-        <div className="header mb-10">
-        {
-          !isSidebarOpen && (
-            <Button className="absolute left-2" variant="ghost" size="icon" onClick={toggleSidebar}>
-              <MenuIcon className={`h-6 w-6 ${isDarkMode ? "text-white" : ""}`} />
-              <span className="sr-only">{isSidebarOpen ? "Close" : "Open"} Sidebar</span>
-            </Button>
-          )
-        }
-          <h1 className={`text-4xl font-bold text-center ${isDarkMode ? "text-white" : ""}`}>
-              What adventure will you create next? 🎉
-            </h1>
-        </div>
-        <div className="flex items-center flex-col space-y-6">
-          <div className={`flex items-center space-x-4 ${isDarkMode ? "text-white" : "text-white"}`}>
-            <Select onValueChange={(e)=> setNoOfWords(parseInt(e))}>
-              <SelectTrigger id="story-length" aria-label="Story length">
-                <SelectValue placeholder="Short (500 words)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="500">Short (500 words) 📗</SelectItem>
-                <SelectItem value="750">Medium (750 words) 📕</SelectItem>
-                <SelectItem value="1000">Long (1000 words) 📘</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select onValueChange={(e)=> setLanguage(e)}>
-              <SelectTrigger id="language" aria-label="Language">
-                <SelectValue placeholder="English" />
-              </SelectTrigger>
-              <SelectContent>
-                {languageConst.map((data, index) => (
-                  <SelectItem key={index} value={data?.value}>{`${data?.name}`}</SelectItem>
-                ))}
-                {/* <SelectItem value="English">English 🇺🇸</SelectItem>
-                <SelectItem value="Spanish">Spanish 🇪🇸</SelectItem>
-                <SelectItem value="French">French 🇫🇷</SelectItem> */}
-              </SelectContent>
-            </Select>
-            <Select onValueChange={(e)=> setAudience(e)}>
-              <SelectTrigger id="audience" aria-label="Audience">
-                <SelectValue placeholder="Children" />
-              </SelectTrigger>
-              <SelectContent>
-                {targetAudience.map((data, index) => (
-                  <SelectItem key={index} value={data?.value}>{`${data?.name} ${data?.logo}`}</SelectItem>
-                ))}
-                
-                {/* <SelectItem value="Teens">Teens 👦</SelectItem>
-                <SelectItem value="Adults">Adults 👩</SelectItem> */}
-              </SelectContent>
-            </Select>
+      <main className={`flex-grow h-screen overflow-auto ${isDarkMode ? "bg-gray-900" : "bg-white text-black"}`} >
+        <header  className="text-black" >
+          <nav className="flex justify-end items-center border-b border-gray-700 py-4 px-8">
+              <div className="space-x-8">
+                <Link href="/feature" className="text-base font-medium hover:text-indigo-400" prefetch={false}>
+                  Feature
+                </Link>
+                <Link href="/pricing" className="text-base font-medium hover:text-indigo-400" prefetch={false}>
+                  pricing
+                </Link>
+                <Button variant="outline" className="px-4 py-2 text-indigo-400 hover:bg-indigo-400 hover:text-white">
+                  Login
+                </Button>
+              </div>
+          </nav>
+        </header>
+        <div className="p-8" style={{paddingLeft: '100px', paddingRight: '100px'}}>
+          <div className="header mb-10">
+          {
+            !isSidebarOpen && (
+              <Button className="absolute left-2" variant="ghost" size="icon" onClick={toggleSidebar}>
+                <MenuIcon className={`h-6 w-6 ${isDarkMode ? "text-white" : ""}`} />
+                <span className="sr-only">{isSidebarOpen ? "Close" : "Open"} Sidebar</span>
+              </Button>
+            )
+          }
+            <h1 className={`text-4xl font-bold text-center ${isDarkMode ? "text-white" : ""}`}>
+                What adventure will you create next? 🎉
+              </h1>
           </div>
-          <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="character-name" className={isDarkMode ? "text-white" : ""}>
-                Character Name(s) 👤
-              </Label>
-              <div className="flex flex-col space-y-2">
-                {characters.map((character, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <Badge variant="outline" className={`flex-1 ${isDarkMode ? "text-white" : "text-black"}`}>
-                      {character.name || `Character ${index + 1} Name`}
-                    </Badge>
-                    <Badge variant="outline" className={`flex-1 ${isDarkMode ? "text-white" : "text-black"}`}>
-                      {character.description || `Character ${index + 1} Description`}
-                    </Badge>
-                    <Button variant="ghost" size="icon" onClick={() => removeCharacter(index)}>
-                      <XIcon className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`} />
+          <div className="flex items-center flex-col space-y-6">
+            <div className={`flex items-center space-x-4 ${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+              <Select onValueChange={(e)=> setNoOfWords(parseInt(e))}>
+                <SelectTrigger id="story-length" aria-label="Story length" className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>  
+                  <SelectValue placeholder="Short (500 words)" />
+                </SelectTrigger>
+                <SelectContent className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                  <SelectItem value="500">Short (500 words) 📗</SelectItem>
+                  <SelectItem value="750">Medium (750 words) 📕</SelectItem>
+                  <SelectItem value="1000">Long (1000 words) 📘</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select onValueChange={(e)=> setLanguage(e)}>
+                <SelectTrigger id="language" aria-label="Language" className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                  <SelectValue placeholder="English" />
+                </SelectTrigger>
+                <SelectContent className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                  {languageConst.map((data, index) => (
+                    <SelectItem key={index} value={data?.value}>{`${data?.name}`}</SelectItem>
+                  ))}
+                  {/* <SelectItem value="English">English 🇺🇸</SelectItem>
+                  <SelectItem value="Spanish">Spanish 🇪🇸</SelectItem>
+                  <SelectItem value="French">French 🇫🇷</SelectItem> */}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={(e)=> setAudience(e)}>
+                <SelectTrigger id="audience" aria-label="Audience" className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                  <SelectValue placeholder="Children" />
+                </SelectTrigger>
+                <SelectContent className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                  {targetAudience.map((data, index) => (
+                    <SelectItem key={index} value={data?.value}>{`${data?.name} ${data?.logo}`}</SelectItem>
+                  ))}
+                  
+                  {/* <SelectItem value="Teens">Teens 👦</SelectItem>
+                  <SelectItem value="Adults">Adults 👩</SelectItem> */}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid lg:grid-cols-2 grid-cols-1 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="character-name" className={isDarkMode ? "text-white" : ""}>
+                  Character Name(s) 👤
+                </Label>
+                <div className="flex flex-col space-y-2">
+                  {characters.map((character, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <Badge variant="outline" className={`flex-1 p-3 ${isDarkMode ? "text-white" : "text-black"}`}>
+                        {character.name || `Character ${index + 1} Name`}
+                      </Badge>
+                      <Badge variant="outline" className={`flex-1 p-3 ${isDarkMode ? "text-white" : "text-black"}`}>
+                        {character.description || `Character ${index + 1} Description`}
+                      </Badge>
+                      <Button variant="ghost" size="icon" onClick={() => removeCharacter(index)}>
+                        <XIcon className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`} />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      id="new-character-name"
+                      placeholder="Character Name"
+                      value={newCharacter.name}
+                      onChange={(e) => handleNewCharacterChange("name", e.target.value)}
+                      className={isDarkMode ? "text-white bg-gray-800" : "text-black"}
+                    />
+                    <Input
+                      id="new-character-description"
+                      placeholder="Character Description"
+                      value={newCharacter.description}
+                      onChange={(e) => handleNewCharacterChange("description", e.target.value)}
+                      className={isDarkMode ? "text-white bg-gray-800" : "text-black"}
+                    />
+                    <Button variant="outline" onClick={addCharacter} className={`${isDarkMode ? "text-white bg-gray-800" : "text-black"}`}>
+                      <PlusIcon className={`h-4 w-4 mr-2 ${isDarkMode ? "text-white bg-gray-800" : "text-black"}`} />
+                      Add
                     </Button>
                   </div>
-                ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="adventure" className={isDarkMode ? "text-white bg-gray-800" : "text-black"}>
+                  Adventure 🎢
+                </Label>
                 <div className="flex items-center space-x-2">
                   <Input
-                    id="new-character-name"
-                    placeholder="Character Name"
-                    value={newCharacter.name}
-                    onChange={(e) => handleNewCharacterChange("name", e.target.value)}
-                    className={isDarkMode ? "text-white" : "text-white"}
+                    id="adventure"
+                    placeholder="eating lots of yummy food"
+                    className={isDarkMode ? "text-white bg-gray-800" : "text-black"}
+                    onChange={e => setAdventure(e.target.value)}
+                    value={adventure}
                   />
-                  <Input
-                    id="new-character-description"
-                    placeholder="Character Description"
-                    value={newCharacter.description}
-                    onChange={(e) => handleNewCharacterChange("description", e.target.value)}
-                    className={isDarkMode ? "text-white" : "text-white"}
-                  />
-                  <Button variant="outline" onClick={addCharacter} className={`${isDarkMode ? "text-white" : "text-white"}`}>
-                    <PlusIcon className={`h-4 w-4 mr-2 ${isDarkMode ? "text-white" : "text-white"}`} />
-                    Add
+                  <Button variant="secondary" onClick={handleGenerateStory}  className={`${isDarkMode ? "bg-gray-800 text-white" : ""}`}>
+                    <ArrowRightIcon className={`h-6 w-6 ${isDarkMode ? "text-white " : ""}`} />
+                    <span className="ml-2">Generate Story</span>
+                    {/* <Loader /> */}
                   </Button>
                 </div>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="adventure" className={isDarkMode ? "text-white" : "text-black"}>
-                Adventure 🎢
-              </Label>
-              <div className="flex items-center space-x-2">
-                <Input
-                  id="adventure"
-                  placeholder="eating lots of yummy food"
-                  className={isDarkMode ? "text-white" : "text-white"}
-                  onChange={e => setAdventure(e.target.value)}
-                  value={adventure}
-                />
-                <Button variant="secondary" onClick={handleGenerateStory}>
-                  <ArrowRightIcon className={`h-6 w-6 ${isDarkMode ? "text-white" : ""}`} />
-                  <span className="ml-2">Generate Story</span>
-                  {/* <Loader /> */}
-                </Button>
-              </div>
-            </div>
           </div>
-        </div>
-        <div>
-        {stories.length > 0 && (
-            <div className="mt-6">
-              <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? "text-white" : ""}`}>Generated Stories:</h2>
-              <Accordion type="single" collapsible className="w-full">
-                {stories.map((story, index) => (
-                  <AccordionItem key={index} value={`story-${index}`}>
-                    <AccordionTrigger>
-                      <div className="flex items-center justify-between w-full">
-                        <span>Story {index + 1}</span>
-                        <XIcon
-                          className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`}
-                          onClick={() => deleteStory(index)}
-                        />
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <Para text={story} />
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          )}
+          <div>
+          {loader && 
+          <div className="mt-4 flex justify-center">
+            <Loader />
+          </div> }
+          {stories.length > 0 && (
+              <div className="mt-10">
+                <h2 className={`text-2xl font-bold mb-2 ${isDarkMode ? "text-white" : ""}`}>Generated Stories:</h2>
+                <Accordion type="single" collapsible className="w-full">
+                  {stories.map((story, index) => (
+                    <AccordionItem key={index} value={`story-${index}`}>
+                      <AccordionTrigger>
+                        <div className={`flex items-center justify-between w-full ${isDarkMode ? "text-white" : ""}`}>
+                          <span>{title[index]}</span>
+                          <XIcon
+                            className={`h-4 w-4 ${isDarkMode ? "text-white" : ""}`}
+                            onClick={() => deleteStory(index)}
+                          />
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className={`${isDarkMode ? "text-white" : ""}`}>
+                        <Para text={story} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            )}
+          </div>
         </div>
       </main>
       {/* <AlertDialog open={isUpgradeDialogOpen} onOpenChange={setIsUpgradeDialogOpen}>

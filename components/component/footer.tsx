@@ -2,42 +2,104 @@ import Link from 'next/link'
 
 export default function Footer () {
     return (
-        <footer className="bg-gray-50 border-t border-gray-200 py-8">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap justify-between">
-                <div className="w-full md:w-1/2 lg:w-1/3">
-                <h3 className="font-bold text-lg mb-4">Product</h3>
-                <ul className="space-y-2">
-                    <li>Bedtime stories for adults</li>
-                    <li>Bedtime stories for teens</li>
-                    <li>Christmas bedtime stories</li>
-                    <li>Bedtime stories for toddlers</li>
-                    <li>Personalized bedtime stories</li>
-                    <li>Bedtime stories for babies</li>
-                </ul>
-                </div>
-                <div className="w-full md:w-1/2 lg:w-1/3">
-                <h3 className="font-bold text-lg mb-4">Features</h3>
-                <ul className="space-y-2">
-                    <li>Long bedtime stories</li>
-                    <li>New bedtime stories</li>
-                    <li>Bedtime stories for kids</li>
-                    <li>Funny bedtime stories</li>
-                    <li>Bedtime stories for girls</li>
-                    <li>Bedtime stories for babies</li>
-                </ul>
-                </div>
-                <div className="w-full md:w-1/2 lg:w-1/3">
-                <h3 className="font-bold text-lg mb-4">Company</h3>
-                <ul className="space-y-2">
-                    <li>Terms of Service</li>
-                    <li>Privacy Policy</li>
-                    <li>Contact Us</li>
-                </ul>
-                </div>
+      <footer className="py-12 px-8 border-t border-gray-400">
+        <div className='flex'>
+          <div className='flex-none w-25 text-gray-900 self-center'>
+            <h1 className="text-2xl font-bold mb-4">Sleepytales Adventure</h1>
+            <p className="text-gray-400 text-sm">
+              Transform bedtime stories into a magical adventure with our AI bedtime story generator.
+            </p>
+          </div>
+          <div className="flex-1 max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-sm">
+            <div>
+              <h3 className="text-lg font-bold mb-4">Twitter</h3>
+              <ul className="space-y-2 text-gray-400 leading-6">
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Follow us on Twitter
+                  </Link>
+                </li>
+              </ul>
             </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400 leading-6">
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    FAQs
+                  </Link>
+                </li>
+              </ul>
             </div>
-        </footer>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Realms</h3>
+              <ul className="space-y-2 text-gray-400 leading-6">
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Fairy Tale Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Pirate's Cove Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Enchanted Forest Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Mythical Creature Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Outer Space Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Medieval Kingdom Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Underwater Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Magical School Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Spooky Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Time Travel Realm
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" prefetch={false}>
+                    Superhero Realm
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+       
+      </footer>
     )
 }
 

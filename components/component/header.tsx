@@ -1,26 +1,25 @@
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
+
 export default function Header() {
     return (
-        <header className="px-4 lg:px-6 h-14 flex items-center">
-            <Link className="flex items-center justify-center" href="/">
-            Bet-time-story
-            <span className="sr-only text-black">Acme Inc</span>
-            </Link>
-            <nav className="ml-auto flex gap-4 sm:gap-6">
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="/feature">
-                Features
-            </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="/pricing">
-                Pricing
-            </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-                About
-            </Link>
-            <Link className="text-sm font-medium hover:underline underline-offset-4" href="#">
-                Contact
-            </Link>
-            </nav>
-        </header>
+      <header  className="text-black">
+        <nav className="flex justify-between items-center py-4 px-8 border-b border-gray-400">
+          <h1 className="text-2xl font-bold">Sleepytales Adventure</h1>
+            <div className="space-x-8">
+              <Link href="/feature" className="text-base font-medium hover:text-indigo-400" prefetch={false}>
+                Feature
+              </Link>
+              <Link href="/pricing" className="text-base font-medium hover:text-indigo-400" prefetch={false}>
+                pricing
+              </Link>
+              <Button variant="outline" className="px-4 py-2 text-indigo-400 hover:bg-indigo-400 hover:text-white">
+                Login
+              </Button>
+            </div>
+        </nav>
+      </header>
     )
 }
 

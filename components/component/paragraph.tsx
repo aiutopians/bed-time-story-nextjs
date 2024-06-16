@@ -7,10 +7,10 @@ const Para = ({ text }) => {
     <div>
       {paragraphs?.length > 0 ? paragraphs.map((paragraph, index) => (
         <>
-            <p key={index}>{paragraph}</p>
+            <p className='leading-6' key={index}>{paragraph}</p>
             <br/>
         </>
-      )) : <p>{text}</p>
+      )) : <p className='leading-6'>{text}</p>
     }
     </div>
   );

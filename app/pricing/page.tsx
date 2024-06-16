@@ -6,7 +6,7 @@ import Footer from '@/components/component/footer'
 
 export default function Pricing() {
     return (
-      <div className="bg-white text-black h-screen w-full flex flex-col justify-between">
+      <div className="bg-white text-black w-full flex flex-col justify-between">
         {/* Header */}
         <Header />
   
@@ -21,9 +21,9 @@ export default function Pricing() {
           
           <div className="mt-12 grid gap-8 lg:grid-cols-2 lg:gap-12">
             {/* Free Plan */}
-            <div className="border border-gray-200 rounded-lg shadow-sm p-6">
+            <div className="border border-gray-500 rounded-lg shadow-sm p-6">
               <h3 className="text-lg leading-6 font-medium">What's included in the FREE plan</h3>
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-4 space-y-2 text-muted-foreground text-sm">
                 <li>2 short stories per month</li>
                 <li>1 voice actor</li>
                 <li>Supported languages: English</li>
@@ -44,9 +44,9 @@ export default function Pricing() {
             </div>
             
             {/* Pro Plan */}
-            <div className="border border-gray-200 rounded-lg shadow-sm p-6">
+            <div className="border border-gray-500 rounded-lg shadow-sm p-6">
               <h3 className="text-lg leading-6 font-medium">What's included in the PRO plan</h3>
-              <ul className="mt-4 space-y-2">
+              <ul className="mt-4 space-y-2 text-muted-foreground text-sm">
                 <li>30 short, medium, or long stories per month</li>
                 <li>5 unique voice actors</li>
                 <li>Supported languages: English, Chinese, French, German, Italian, Japanese, Korean, Spanish</li>
